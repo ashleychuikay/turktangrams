@@ -88,74 +88,63 @@ timeline.push(instructions);
 
 
 // Read in .csv from server
-// var xhr = new XMLHttpRequest(),
-//     method = "GET",
-//     // url = "https://raw.githubusercontent.com/ashleychuikay/animalgame/master/gamecode/trials.csv";
-//     // add correct link here
+var xhr = new XMLHttpRequest(),
+    method = "GET",
+    url = "https://cdn.rawgit.com/ashleychuikay/turktangrams/master/turktrials.csv";
 
-// xhr.open(method, url, true);
+xhr.open(method, url, true);
 
-// xhr.onreadystatechange = function () {
-//   if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+xhr.onreadystatechange = function () {
+  if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
 
-//     trials = $.csv.toArrays(xhr.responseText);
+    trials = $.csv.toArrays(xhr.responseText);
 
-//     allTrials = new Array
+    shuffle(trials)
+    // console.log(trials)
+    // allTrials = new Array
 
-// 		for(i=0; i<trials.length; i++){
-// 			newArr = trials[i].slice();	
+		for(i=0; i<trials.length; i++){
+			shuffle(trials[i])
+		};
 
-// 			for(j=1; j<=2; j++){
-// 				subArr = newArr.slice();
-// 				subArr.push(subArr[j]);
-// 				items = subArr.slice(0,2);
-// 				shuffle(items);
-// 				subArr.splice(0,2,items[0],items[1]);
-// 				allTrials.push(subArr);
-// 			}
-// 		};
-//   }
-// };
-// xhr.send();
+	//Making stimulus set
+	var allStim = []
 
-allTrials = ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1", "I1", "J1", "K1"]
+		for(i=0; i<trials.length; i++){
+			
+		leftpic = "images/" + trials[i][0] + ".jpg";
+		rightpic = "images/" + trials[i][1] + ".jpg";
 
-//Making stimulus set
-var allStim = []
+		allStim.push({stimulus: "<table align = center><tr><td><img src=" + leftpic + " height = 350></td><td><img src =" + rightpic + " height = 350></td></tr></table>"})
 
-for(i=0; i<allTrials.length; i++){
-	
-	leftpic = "images/" + allTrials[0] + ".jpg";
-	rightpic = "images/" + allTrials[1] + ".jpg";
+		trials.splice(0,1);
+	};
 
-	allStim.push({stimulus: "<table align = center><tr><td><img src=" + leftpic + " height = 350></td><td><img src =" + rightpic + " height = 350></td></tr></table>"})
 
-	allTrials.splice(0,2);
+	var test = {
+	    type: 'html-slider-response',
+	    stimulus: jsPsych.timelineVariable('stimulus'),
+	    prompt: "<p>How similar are these two tangrams? Please respond using the slider.</p>",
+	    labels: ["Not similar", "Very similar"],
+	  response_ends_trial: true
+	};
+
+
+	var test_procedure = {
+	  timeline: [test],
+	  timeline_variables: allStim
+	};
+
+	timeline.push(test_procedure);
+
+	jsPsych.init({
+		timeline:timeline
+	});
+  }
 };
-
-// var test_stimuli = allStim
-
-console.log(allStim)
-
-var test = {
-    type: 'html-slider-response',
-    stimulus: jsPsych.timelineVariable('stimulus'),
-    prompt: "<p>How similar are these two tangrams? Please respond using the slider.</p>",
-    labels: ["Not similar", "Very similar"],
-  response_ends_trial: true
-};
-
-// timeline.push(test);
-
-var test_procedure = {
-  timeline: [test],
-  timeline_variables: allStim
-};
-
-timeline.push(test_procedure);
+xhr.send();
 
 
-jsPsych.init({
-	timeline:timeline
-});
+
+
 
