@@ -36,50 +36,31 @@ var welcome = {
 timeline.push(welcome)
 
 // Create the object table (tr=table row; td= table data)
-//var objects_html = "";
 
 	//HTML for the first object on the left
 	pic1 = "images/" + tangramslist[0] + ".jpg";
-	// objects_html += '<table style = "height:100%; width:75%" align = "center"><tr><td><img src="' + pic1 + '" height = 350></td>';
 
 	pic2 = "images/" + tangramslist[1] + ".jpg";
-	// objects_html += '<td><img src="' + pic2 + '" height = 350></td>';
 
 	pic3 = "images/" + tangramslist[2] + ".jpg";
-	// objects_html += '<td><img src="' + pic3 + '" height = 350></td>';
 
 	pic4 = "images/" + tangramslist[3] + ".jpg";
-	// objects_html += '<td><img src="' + pic4 + '" height = 350></td>';
 	
 	pic5 = "images/" + tangramslist[4] + ".jpg";
-	// objects_html += '<td><img src="' + pic5 + '" height = 350></td>';
 	
 	pic6 = "images/" + tangramslist[5] + ".jpg";
-	// objects_html += '<td><img src="' + pic6 + '" height = 350></td></tr><tr height="100"></tr>';
 
 	pic7 = "images/" + tangramslist[6] + ".jpg";
-	// objects_html += '<tr><td><img src="' + pic7 + '" height = 350></td>';
 
 	pic8 = "images/" + tangramslist[7] + ".jpg";
-	// objects_html += '<td><img src="' + pic8 + '" height = 350></td>';
 
 	pic9 = "images/" + tangramslist[8] + ".jpg";
-	// objects_html += '<td><img src="' + pic9 + '" height = 350></td>';
-
+	
 	pic10 = "images/" + tangramslist[9] + ".jpg";
-	// objects_html += '<td><img src="' + pic10 + '" height = 350></td>';
 	
 	pic11 = "images/" + tangramslist[10] + ".jpg";
-	// objects_html += '<td><img src="' + pic11 + '" height = 350></td>';
-	
-	pic12 = "images/" + tangramslist[11] + ".jpg";
-	// objects_html += '<td><img src="' + pic12 + '" height = 350></td>';
-		
-	// objects_html += '</tr></table>';
 
-// $("#objects").html(objects_html); 
-// showSlide("instructions");
-// $("objects_html").fadeIn(); 
+	pic12 = "images/" + tangramslist[11] + ".jpg";
 
  
 var instructions = {
