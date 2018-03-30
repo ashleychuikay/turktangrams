@@ -142,7 +142,9 @@ xhr.onreadystatechange = function () {
 
 	jsPsych.init({
 		timeline:timeline
-		// on_finish
+		// on_finish: function(data){
+			//
+		//}
 	});
   }
 };
