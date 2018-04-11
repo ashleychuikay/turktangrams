@@ -115,7 +115,7 @@ xhr.onreadystatechange = function () {
 		leftpic = "images/" + trials[i][0] + ".jpg";
 		rightpic = "images/" + trials[i][1] + ".jpg";
 
-		allStim.push({stimulus: "<table align = center><tr><td><img src=" + leftpic + " height = 200></td><td><img src =" + rightpic + " height = 200></td></tr><tr height = 80></tr></table>"})
+		allStim.push({stimulus: "<table align = center><tr><td><img src=" + leftpic + " height = 200></td><td width = 80></td><td><img src =" + rightpic + " height = 200></td></tr><tr height = 80></tr></table>"})
 
 		trials.splice(0,1);
 	};
