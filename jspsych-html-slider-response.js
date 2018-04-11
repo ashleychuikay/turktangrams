@@ -121,6 +121,7 @@ jsPsych.plugins['html-slider-response'] = (function() {
     };
 
     display_element.querySelector('#jspsych-html-slider-response-next').addEventListener('click', function() {
+
       // measure response time
       var endTime = (new Date()).getTime();
       response.rt = endTime - startTime;
