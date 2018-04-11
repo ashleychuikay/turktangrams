@@ -69,17 +69,17 @@ var instructions = {
           "<p>For each pair, you will be asked how similar the two tangrams are to each other.</p>" +
           "<p>There will be a slider on the screen for you to indicate similarity.</p>" +
           "<table align = center><tr><td><img src=" + pic1 + " height = 200></td>" +
-          "<td><img src=" + pic2 +  " height = 200></td>" +
-          "<td><img src=" + pic3 + " height = 200></td>" +
-          "<td><img src=" + pic4 + " height = 200></td>" +
-          "<td><img src=" + pic5 + " height = 200></td>" +
-          "<td><img src=" + pic6 + " height = 200></td></tr><tr height=100></tr>" +
-          "<tr><td><img src=" + pic7 + " height = 200></td>" +
-          "<td><img src=" + pic8 + " height = 200></td>" +
-          "<td><img src=" + pic9 + " height = 200></td>" +
-          "<td><img src=" + pic10 + " height = 200></td>" +
-          "<td><img src=" + pic11 + " height = 200></td>" +
-          "<td><img src=" + pic12 + " height = 200></td></tr></table>" +
+          "<td><img src=" + pic2 +  " height = 90></td>" +
+          "<td><img src=" + pic3 + " height = 90></td>" +
+          "<td><img src=" + pic4 + " height = 90></td>" +
+          "<td><img src=" + pic5 + " height = 90></td>" +
+          "<td><img src=" + pic6 + " height = 90></td></tr><tr height=100></tr>" +
+          "<tr><td><img src=" + pic7 + " height = 50></td>" +
+          "<td><img src=" + pic8 + " height = 90></td>" +
+          "<td><img src=" + pic9 + " height = 90></td>" +
+          "<td><img src=" + pic10 + " height = 90></td>" +
+          "<td><img src=" + pic11 + " height = 90></td>" +
+          "<td><img src=" + pic12 + " height = 90></td></tr></table>" +
           "<p>Press any key to begin.</p>",
      post_trial_gap: 200
 };
@@ -90,7 +90,7 @@ timeline.push(instructions);
 // Read in .csv from server
 var xhr = new XMLHttpRequest(),
     method = "GET",
-    url = "https://cdn.rawgit.com/ashleychuikay/turktangrams/master/turktrials1.csv";
+    url = "https://cdn.rawgit.com/ashleychuikay/turktangrams/1926722b/turktrials1.csv";
 
 xhr.open(method, url, true);
 
@@ -115,7 +115,7 @@ xhr.onreadystatechange = function () {
 		leftpic = "images/" + trials[i][0] + ".jpg";
 		rightpic = "images/" + trials[i][1] + ".jpg";
 
-		allStim.push({stimulus: "<table align = center><tr><td><img src=" + leftpic + " height = 350></td><td><img src =" + rightpic + " height = 350></td></tr><tr height = 80></tr></table>"})
+		allStim.push({stimulus: "<table align = center><tr><td><img src=" + leftpic + " height = 200></td><td><img src =" + rightpic + " height = 200></td></tr><tr height = 80></tr></table>"})
 
 		trials.splice(0,1);
 	};
