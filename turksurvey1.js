@@ -24,6 +24,14 @@ for (i=0; i<tangrams.length; i++){
 
 console.log(tangramslist)
 
+//function to save data
+function saveData(name, data){
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send(JSON.stringify({filename: name, filedata: data}));
+}
+
 // Create timeline
 var timeline = [];
 
@@ -68,18 +76,18 @@ var instructions = {
      stimulus: "<p>In this experiment, you will see pairs of tangrams drawn from the following set of 12. </p>" +
           "<p>For each pair, you will be asked how similar the two tangrams are to each other.</p>" +
           "<p>There will be a slider on the screen for you to indicate similarity.</p>" +
-          "<table align = center><tr><td><img src=" + pic1 + " height = 200></td>" +
-          "<td><img src=" + pic2 +  " height = 90></td>" +
-          "<td><img src=" + pic3 + " height = 90></td>" +
-          "<td><img src=" + pic4 + " height = 90></td>" +
-          "<td><img src=" + pic5 + " height = 90></td>" +
-          "<td><img src=" + pic6 + " height = 90></td></tr><tr height=100></tr>" +
-          "<tr><td><img src=" + pic7 + " height = 50></td>" +
-          "<td><img src=" + pic8 + " height = 90></td>" +
-          "<td><img src=" + pic9 + " height = 90></td>" +
-          "<td><img src=" + pic10 + " height = 90></td>" +
-          "<td><img src=" + pic11 + " height = 90></td>" +
-          "<td><img src=" + pic12 + " height = 90></td></tr></table>" +
+          "<table align = center><tr><td><img src=" + pic1 + " height = 100></td>" +
+          "<td><img src=" + pic2 +  " height = 100></td>" +
+          "<td><img src=" + pic3 + " height = 100></td>" +
+          "<td><img src=" + pic4 + " height = 100></td>" +
+          "<td><img src=" + pic5 + " height = 100></td>" +
+          "<td><img src=" + pic6 + " height = 100></td></tr><tr height=60></tr>" +
+          "<tr><td><img src=" + pic7 + " height = 100></td>" +
+          "<td><img src=" + pic8 + " height = 100></td>" +
+          "<td><img src=" + pic9 + " height = 100></td>" +
+          "<td><img src=" + pic10 + " height = 100></td>" +
+          "<td><img src=" + pic11 + " height = 100></td>" +
+          "<td><img src=" + pic12 + " height = 100></td></tr></table>" +
           "<p>Press any key to begin.</p>",
      post_trial_gap: 200
 };
@@ -142,9 +150,7 @@ xhr.onreadystatechange = function () {
 
 	jsPsych.init({
 		timeline:timeline
-		// on_finish: function(data){
-			//
-		//}
+		on_finish: function(){ saveData("experiment_data.csv", jsPsych.data.get().csv()); }
 	});
   }
 };
