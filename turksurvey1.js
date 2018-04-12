@@ -148,9 +148,11 @@ xhr.onreadystatechange = function () {
 
 	timeline.push(test_procedure);
 
+	turkID = jsPsych.turk.turkInfo().workerID;
+
 	jsPsych.init({
 		timeline:timeline
-		on_finish: function(){ saveData("experiment_data.csv", jsPsych.data.get().csv()); }
+		on_finish: function(){ saveData("data_" + workerID + ".csv", jsPsych.data.get().csv()); }
 	});
   }
 };
