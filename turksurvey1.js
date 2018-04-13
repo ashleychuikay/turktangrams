@@ -32,6 +32,9 @@ function saveData(name, data){
   xhr.send(JSON.stringify({filename: name, filedata: data}));
 }
 
+//
+// var preview = jsPsych.turk.turkInfo().previewMode
+
 // Create timeline
 var timeline = [];
 
@@ -151,7 +154,8 @@ xhr.onreadystatechange = function () {
 	turkID = jsPsych.turk.turkInfo().workerID;
 
 	jsPsych.init({
-		timeline:timeline
+		timeline:timeline,
+		show_progress_bar: true,
 		on_finish: function(){ saveData("data_" + workerID + ".csv", jsPsych.data.get().csv()); }
 	});
   }
