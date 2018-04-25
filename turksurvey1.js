@@ -27,7 +27,7 @@ console.log(tangramslist)
 //function to save data
 function saveData(name, data){
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'write_data.php'); // 'write_data.php' is the path to the php file described above.
+  xhr.open('POST', 'turktangramsdata.php'); // 'write_data.php' is the path to the php file described above.
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(JSON.stringify({filename: name, filedata: data}));
 }
@@ -151,12 +151,17 @@ xhr.onreadystatechange = function () {
 
 	timeline.push(test_procedure);
 
+	var endtest = {
+		type: 'html-keyboard-response',
+		stimulus: "<p>This is the end of the study. Thank you for participating! Please press any key to end the experiment.</p>" 
+	}
+
 	turkID = jsPsych.turk.turkInfo().workerID;
 
 	jsPsych.init({
 		timeline:timeline,
 		show_progress_bar: true,
-		on_finish: function(){ saveData("data_" + workerID + ".csv", jsPsych.data.get().csv()); }
+		on_finish: function(){ saveData("data_" + turkID + ".csv", jsPsych.data.get().csv()); }
 	});
   }
 };
