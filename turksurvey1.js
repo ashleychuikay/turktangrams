@@ -22,7 +22,6 @@ for (i=0; i<tangrams.length; i++){
 	tangramslist.push(newtangram);
 }
 
-console.log(tangramslist)
 
 //function to save data
 function saveData(name, data){
@@ -32,8 +31,6 @@ function saveData(name, data){
   xhr.send(JSON.stringify({filename: name, filedata: data}));
 }
 
-//
-// var preview = jsPsych.turk.turkInfo().previewMode
 
 // Create timeline
 var timeline = [];
@@ -111,8 +108,6 @@ xhr.onreadystatechange = function () {
     trials = $.csv.toArrays(xhr.responseText);
 
     shuffle(trials)
-    // console.log(trials)
-    // allTrials = new Array
 
 		for(i=0; i<trials.length; i++){
 			shuffle(trials[i])
@@ -130,9 +125,6 @@ xhr.onreadystatechange = function () {
 
 		trials.splice(0,1);
 	};
-
-	console.log(allStim)
-
 
 	var test = {
 	    type: 'html-slider-response',
@@ -158,11 +150,17 @@ xhr.onreadystatechange = function () {
 
 	turkID = jsPsych.turk.turkInfo().workerID;
 
+	//Preview mode
+	var preview = jsPsych.turk.turkInfo().previewMode
+	if(preview = true){
+		alert("Please accept the HIT to beging the study.");
+	} else{
 	jsPsych.init({
 		timeline:timeline,
 		show_progress_bar: true,
 		on_finish: function(){ saveData("data_" + turkID + ".csv", jsPsych.data.get().csv()); }
 	});
+	}
   }
 };
 xhr.send();
