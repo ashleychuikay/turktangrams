@@ -25,8 +25,9 @@ for (i=0; i<tangrams.length; i++){
 
 //function to save data
 function saveData(name, data){
+	console.log("saved!")
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'turktangramsdata.php'); // 'write_data.php' is the path to the php file described above.
+  xhr.open('POST', 'turktangramsdata.php'); 
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(JSON.stringify({filename: name, filedata: data}));
 }
@@ -38,7 +39,10 @@ var timeline = [];
 // Welcome screen
 var welcome = {
 	type: "html-keyboard-response",
-    stimulus: "Welcome to the experiment! Press any key to begin."
+    stimulus: "Welcome to the experiment! Press any key to begin.",
+    on_finish: function(){
+        jsPsych.setProgressBar(1/24); 
+    }
 };
 
 timeline.push(welcome)
@@ -89,11 +93,15 @@ var instructions = {
           "<td><img src=" + pic11 + " height = 100></td>" +
           "<td><img src=" + pic12 + " height = 100></td></tr></table>" +
           "<p>Press any key to begin.</p>",
-     post_trial_gap: 200
+     post_trial_gap: 200,
+     on_finish: function(){
+        jsPsych.setProgressBar(2/24);
+    }
 };
 
 timeline.push(instructions);
 
+trialnum = 2
 
 // Read in .csv from server
 var xhr = new XMLHttpRequest(),
@@ -113,18 +121,22 @@ xhr.onreadystatechange = function () {
 			shuffle(trials[i])
 		};
 
+	console.log(trials);
+	
+
 	//Making stimulus set
 	var allStim = []
 
-		for(i=0; i<trials.length; i++){
+	allTrials = trials.slice()
+
+		for(i=0; i<allTrials.length; i++){	
 			
-		leftpic = "images/" + trials[i][0] + ".jpg";
-		rightpic = "images/" + trials[i][1] + ".jpg";
+		leftpic = "images/" + allTrials[i][0] + ".jpg";
+		rightpic = "images/" + allTrials[i][1] + ".jpg";
 
 		allStim.push({stimulus: "<table align = center><tr><td><img src=" + leftpic + " height = 200></td><td width = 150></td><td><img src =" + rightpic + " height = 200></td></tr><tr height = 80></tr></table>"})
-
-		trials.splice(0,1);
 	};
+
 
 	var test = {
 	    type: 'html-slider-response',
@@ -132,7 +144,11 @@ xhr.onreadystatechange = function () {
 	    prompt: "<p>How similar are these two tangrams? Please respond using the slider above.</p>",
 	    labels: ["Not similar", "Very similar"],
 	    post_trial_gap: 100,
-	  response_ends_trial: true
+	  response_ends_trial: true,
+	  on_finish: function(){
+	    trialnum = trialnum + 1;
+        jsPsych.setProgressBar(trialnum/24); 
+    	}
 	};
 
 
@@ -142,26 +158,44 @@ xhr.onreadystatechange = function () {
 	};
 
 	timeline.push(test_procedure);
+	
+	//data collection
+	// var data = jsPsych.data.get().csv();
+	
 
 	var endtest = {
 		type: 'html-keyboard-response',
-		stimulus: "<p>This is the end of the study. Thank you for participating! Please press any key to end the experiment.</p>" 
-	}
+		stimulus: "<p>This is the end of the study. Thank you for participating! Please press any key to end the experiment.</p>",
+		on_finish: function(){
+        jsPsych.setProgressBar(1);
+        jsPsych.data.displayData('csv');
+        saveData("data.csv", jsPsych.data.get().csv());
+        // console.log(data.csv) 
+    	}
+	};
 
-	turkID = jsPsych.turk.turkInfo().workerID;
+	timeline.push(endtest);
+
+	// turkID = jsPsych.turk.turkInfo().workerID;
+	// console.log(turkID);
 
 	//Preview mode
-	var preview = jsPsych.turk.turkInfo().previewMode
-	if(preview = true){
-		alert("Please accept the HIT to beging the study.");
-	} else{
-	jsPsych.init({
-		timeline:timeline,
-		show_progress_bar: true,
-		on_finish: function(){ saveData("data_" + turkID + ".csv", jsPsych.data.get().csv()); }
+	var preview = jsPsych.turk.turkInfo().previewMode;
+
+
+
+	if(preview == false){
+		jsPsych.init({
+			timeline:timeline,
+			show_progress_bar: true,
+			auto_update_progress_bar: false,
+			on_finish: function(){ 
+				jsPsych.turk.submitToTurk(jsPsych.data.get().csv());
+				// saveData("data_" + jsPsych.turk.turkInfo().workerID + ".csv", data)}
+		}
 	});
-	}
   }
+}
 };
 xhr.send();
 
