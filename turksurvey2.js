@@ -4,12 +4,6 @@ shuffle = function (o) { //v1.0
     return o;
 }
 
-// show slide function
-function showSlide(id) {
-  $(".slide").hide(); //jquery - all elements with class of slide - hide
-  $("#"+id).show(); //jquery - element with given id - show
-}
-
 //Show 12 tangrams in random order
 var tangrams = ["A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1", "I1", "J1", "K1", "L1"];
 var tangramslist = [];
@@ -22,21 +16,20 @@ for (i=0; i<tangrams.length; i++){
 	tangramslist.push(newtangram);
 }
 
-//function to save data
-function saveData(name, data){
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'turktangramsdata.php'); // 'write_data.php' is the path to the php file described above.
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.send(JSON.stringify({filename: name, filedata: data}));
-}
-
 // Create timeline
 var timeline = [];
 
 // Welcome screen
 var welcome = {
 	type: "html-keyboard-response",
-    stimulus: "Welcome to the experiment! Press any key to begin."
+    stimulus: "<p>Welcome to the experiment! In this study, you will be making similarity judgements for pairs of images.</p>"+
+    "<p>By answering the following questions, you are participating in a study being performed by cognitive scientists in the University of Chicago Department of Psychology.</p>"+
+    "<p>If you have questions about this research, please contact us at <a href='mailto:callab.uchicago@gmail.com'>callab.uchicago@gmail.com</a>.</p>"+
+    "<p>You must be  at least 18 years old to participate. Your participation in this research is voluntary. You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences. Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you. Note however that we have recently been made aware that your public Amazon.com profile can be accessed via your worker ID if you do not choose to opt out. If you would like to opt out of this feature, you may follow instructions available <a href='https://www.amazon.com/gp/help/customer/display.html?nodeId=16465241'>here</a>.</p>"+
+    "<p>Press any key to begin.</p>",
+    on_finish: function(){
+        jsPsych.setProgressBar(1/24); 
+    }
 };
 
 timeline.push(welcome)
@@ -87,11 +80,15 @@ var instructions = {
           "<td><img src=" + pic11 + " height = 100></td>" +
           "<td><img src=" + pic12 + " height = 100></td></tr></table>" +
           "<p>Press any key to begin.</p>",
-     post_trial_gap: 200
+     post_trial_gap: 200,
+     on_finish: function(){
+        jsPsych.setProgressBar(2/24);
+    }
 };
 
 timeline.push(instructions);
 
+trialnum = 2
 
 // Read in .csv from server
 var xhr = new XMLHttpRequest(),
@@ -114,14 +111,14 @@ xhr.onreadystatechange = function () {
 	//Making stimulus set
 	var allStim = []
 
-		for(i=0; i<trials.length; i++){
+	allTrials = trials.slice()
+
+		for(i=0; i<allTrials.length; i++){	
 			
-		leftpic = "images/" + trials[i][0] + ".jpg";
-		rightpic = "images/" + trials[i][1] + ".jpg";
+		leftpic = "images/" + allTrials[i][0] + ".jpg";
+		rightpic = "images/" + allTrials[i][1] + ".jpg";
 
-		allStim.push({stimulus: "<table align = center><tr><td><img src=" + leftpic + " height = 200></td><td width = 150></td><td><img src =" + rightpic + " height = 200></td></tr><tr height = 80></tr></table>"})
-
-		trials.splice(0,1);
+		allStim.push({stimulus: "<table align = 'center'><tr><td height = 200><img src=" + leftpic + " height = 160></td><td width = 150></td><td height = 200><img src =" + rightpic + " height = 160></td></tr></table>"})
 	};
 
 
@@ -131,8 +128,12 @@ xhr.onreadystatechange = function () {
 	    prompt: "<p>How similar are these two tangrams? Please respond using the slider above.</p>",
 	    labels: ["Not similar", "Very similar"],
 	    post_trial_gap: 100,
-	  response_ends_trial: true
-	};
+	  response_ends_trial: true,
+	  on_finish: function(){
+	    trialnum = trialnum + 1;
+        jsPsych.setProgressBar(trialnum/24); 
+    	}
+	}
 
 
 	var test_procedure = {
@@ -144,23 +145,34 @@ xhr.onreadystatechange = function () {
 
 	var endtest = {
 		type: 'html-keyboard-response',
-		stimulus: "<p>This is the end of the study. Thank you for participating! Please press any key to end the experiment.</p>" 
-	}
+		stimulus: "<p>This is the end of the study. Thank you for participating! Please press any key to end the experiment.</p>",
+		on_finish: function(){
+        jsPsych.setProgressBar(1);
+    	}
+	};
 
-	turkID = jsPsych.turk.turkInfo().workerID;
+	timeline.push(endtest);
 
 	//Preview mode
-	var preview = jsPsych.turk.turkInfo().previewMode
-	if(preview = true){
-		alert("Please accept the HIT to beging the study.");
-	} else{
-	jsPsych.init({
-		timeline:timeline,
-		show_progress_bar: true,
-		on_finish: function(){ saveData("data_" + turkID + ".csv", jsPsych.data.get().csv()); }
+	var preview = jsPsych.turk.turkInfo().previewMode;
+
+	if(preview == false){
+		jsPsych.init({
+			timeline:timeline,
+			show_progress_bar: true,
+			auto_update_progress_bar: false,
+			on_finish: function(){ 
+				var slider_answers = jsPsych.data.get().filter({trial_type: 'html-slider-response'}).csv();
+                data= {
+                    slider_answers : slider_answers,
+                    trial_info : trials,
+                    };
+
+				turk.submit(data);
+		}
 	});
-	}
   }
+}
 };
 xhr.send();
 
