@@ -22,15 +22,30 @@ for (i=0; i<tangrams.length; i++){
 	tangramslist.push(newtangram);
 }
 
-console.log(tangramslist)
+// consent to participate.
+var check_consent = function(elem) {
+  if (document.getElementById('consent_checkbox').checked) {
+    return true;
+  }
+  else {
+    alert("If you wish to participate, you must check the box next to the statement 'I agree to participate in this study.'");
+    return false;
+  }
+  return false;
+};
 
 // Create timeline
 var timeline = [];
 
 // Welcome screen
 var welcome = {
-	type: "html-keyboard-response",
-    stimulus: "Welcome to the experiment! Press any key to begin."
+	type:'external-html',
+  	url: "external_page.html",
+  	cont_btn: "start",
+  	check_fn: check_consent,
+	on_finish: function(){
+		jsPsych.setProgressBar(1/24);
+	}
 };
 
 timeline.push(welcome)
