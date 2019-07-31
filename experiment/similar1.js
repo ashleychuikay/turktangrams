@@ -11,7 +11,7 @@ function showSlide(id) {
 }
 
 //Show 12 tangrams in random order
-var tangrams = ["A1", "A2" "B1", "B2", "C2", "E1", "F1", "G1", "H1", "I1", "J1", "K1", "L1", "M1", "N1", "O1", "P1", "Q1", "R1", "S1", "T1", "U1", "V1", "W1", "X1", "Y1", "Z1"];
+var tangrams = ["A1", "A2", "B1", "B2", "C2", "E1", "F1", "G1", "H1", "I1", "J1", "K1", "L1", "M1", "N1", "O1", "P1", "Q1", "R1", "S1", "T1", "U1", "V1", "W1", "X1", "Y1", "Z1"];
 var tangramslist = [];
 var allimages = [];
 
@@ -44,7 +44,7 @@ var welcome = {
   	cont_btn: "start",
   	check_fn: check_consent,
 	on_finish: function(){
-		jsPsych.setProgressBar(1/24);
+		jsPsych.setProgressBar(1/29);
 	}
 };
 
@@ -140,15 +140,19 @@ var instructions = {
           "<td><img src=" + pic27 + " height = 200></td></tr></table>" +
           "<p>Press any key to begin.</p>",
      post_trial_gap: 200
+     on_finish: function(){
+        jsPsych.setProgressBar(2/29);
+    }
 };
 
 timeline.push(instructions);
 
+trialnum = 2
 
 // Read in .csv from server
 var xhr = new XMLHttpRequest(),
     method = "GET",
-    url = "https://cdn.rawgit.com/ashleychuikay/turktangrams/master/turktrials.csv";
+    url = "https://raw.githubusercontent.com/ashleychuikay/turktangrams/master/experiment/similartrials1.csv";
 
 xhr.open(method, url, true);
 
@@ -168,17 +172,15 @@ xhr.onreadystatechange = function () {
 	//Making stimulus set
 	var allStim = []
 
-		for(i=0; i<trials.length; i++){
+	allTrials = trials.slice()
+
+		for(i=0; i<allTrials.length; i++){	
 			
-		leftpic = "images/" + trials[i][0] + ".jpg";
-		rightpic = "images/" + trials[i][1] + ".jpg";
+		leftpic = "images/" + allTrials[i][0] + ".jpg";
+		rightpic = "images/" + allTrials[i][1] + ".jpg";
 
-		allStim.push({stimulus: "<table align = center><tr><td><img src=" + leftpic + " height = 350></td><td><img src =" + rightpic + " height = 350></td></tr><tr height = 80></tr></table>"})
-
-		trials.splice(0,1);
+		allStim.push({stimulus: "<table align = 'center'><tr><td height = 200><img src=" + leftpic + " height = 160></td><td width = 150></td><td height = 200><img src =" + rightpic + " height = 160></td></tr></table>"})
 	};
-
-	console.log(allStim)
 
 
 	var test = {
@@ -187,7 +189,11 @@ xhr.onreadystatechange = function () {
 	    prompt: "<p>How similar are these two tangrams? Please respond using the slider above.</p>",
 	    labels: ["Not similar", "Very similar"],
 	    post_trial_gap: 100,
-	  response_ends_trial: true
+	  response_ends_trial: true,
+	  on_finish: function(){
+	    trialnum = trialnum + 1;
+        jsPsych.setProgressBar(trialnum/29); 
+    	}
 	};
 
 
@@ -197,14 +203,38 @@ xhr.onreadystatechange = function () {
 	};
 
 	timeline.push(test_procedure);
+	
+	var endtest = {
+		type: 'html-keyboard-response',
+		stimulus: "<p>This is the end of the study. Thank you for participating! Please press any key to end the experiment.</p>",
+		on_finish: function(){
+        jsPsych.setProgressBar(1);
+    	}
+	};
 
-	jsPsych.init({
-		timeline:timeline
-		// on_finish: function(data){
-			//
-		//}
+	timeline.push(endtest);
+
+	//Preview mode
+	var preview = jsPsych.turk.turkInfo().previewMode;
+
+
+	if(preview == false){
+		jsPsych.init({
+			timeline:timeline,
+			show_progress_bar: true,
+			auto_update_progress_bar: false,
+			on_finish: function(){ 
+				var slider_answers = jsPsych.data.get().filter({trial_type: 'html-slider-response'}).csv();
+                data= {
+                    slider_answers : slider_answers,
+                    trial_info : trials,
+                    };
+
+				turk.submit(data);
+		}
 	});
   }
+}
 };
 xhr.send();
 
