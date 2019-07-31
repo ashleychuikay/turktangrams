@@ -112,34 +112,34 @@ var instructions = {
      stimulus: "<p>In this experiment, you will see pairs of tangrams drawn from the following set of 12. </p>" +
           "<p>For each pair, you will be asked how similar the two tangrams are to each other.</p>" +
           "<p>There will be a slider on the screen for you to indicate similarity.</p>" +
-          "<table align = center><tr><td><img src=" + pic1 + " height = 200></td>" +
-          "<td><img src=" + pic2 +  " height = 200></td>" +
-          "<td><img src=" + pic3 + " height = 200></td>" +
-          "<td><img src=" + pic4 + " height = 200></td>" +
-          "<td><img src=" + pic5 + " height = 200></td>" +
-          "<td><img src=" + pic6 + " height = 200></td>" +
-          "<td><img src=" + pic7 + " height = 200></td>" +
-          "<td><img src=" + pic9 + " height = 200></td></tr><tr height=100></tr>" +
-          "<tr><td><img src=" + pic10 + " height = 200></td>" +
-          "<td><img src=" + pic11 + " height = 200></td>" +
-          "<td><img src=" + pic12 + " height = 200></td>" +
-          "<td><img src=" + pic13 + " height = 200></td>" +
-          "<td><img src=" + pic14 + " height = 200></td>" +
-          "<td><img src=" + pic15 + " height = 200></td>" +
-          "<td><img src=" + pic16 + " height = 200></td>" +
-          "<td><img src=" + pic17 + " height = 200></td>" +
-          "<td><img src=" + pic18 + " height = 200></td></tr><tr height=100></tr>" +
-          "<tr><td><img src=" + pic19 + " height = 200></td>" +
-          "<td><img src=" + pic20 + " height = 200></td>" +
-          "<td><img src=" + pic21 + " height = 200></td>" +
-          "<td><img src=" + pic22 + " height = 200></td>" +
-          "<td><img src=" + pic23 + " height = 200></td>" +
-          "<td><img src=" + pic24 + " height = 200></td>" +
-          "<td><img src=" + pic25 + " height = 200></td>" +
-          "<td><img src=" + pic26 + " height = 200></td>" +
-          "<td><img src=" + pic27 + " height = 200></td></tr></table>" +
+          "<table align = center><tr><td><img src=" + pic1 + " height = 100></td>" +
+          "<td><img src=" + pic2 +  " height = 100></td>" +
+          "<td><img src=" + pic3 + " height = 100></td>" +
+          "<td><img src=" + pic4 + " height = 100></td>" +
+          "<td><img src=" + pic5 + " height = 100></td>" +
+          "<td><img src=" + pic6 + " height = 100></td>" +
+          "<td><img src=" + pic7 + " height = 100></td>" +
+          "<td><img src=" + pic9 + " height = 100></td></tr><tr height=50></tr>" +
+          "<tr><td><img src=" + pic10 + " height = 100></td>" +
+          "<td><img src=" + pic11 + " height = 100></td>" +
+          "<td><img src=" + pic12 + " height = 100></td>" +
+          "<td><img src=" + pic13 + " height = 100></td>" +
+          "<td><img src=" + pic14 + " height = 100></td>" +
+          "<td><img src=" + pic15 + " height = 100></td>" +
+          "<td><img src=" + pic16 + " height = 100></td>" +
+          "<td><img src=" + pic17 + " height = 100></td>" +
+          "<td><img src=" + pic18 + " height = 100></td></tr><tr height=50></tr>" +
+          "<tr><td><img src=" + pic19 + " height = 100></td>" +
+          "<td><img src=" + pic20 + " height = 100></td>" +
+          "<td><img src=" + pic21 + " height = 100></td>" +
+          "<td><img src=" + pic22 + " height = 100></td>" +
+          "<td><img src=" + pic23 + " height = 100></td>" +
+          "<td><img src=" + pic24 + " height = 100></td>" +
+          "<td><img src=" + pic25 + " height = 100></td>" +
+          "<td><img src=" + pic26 + " height = 100></td>" +
+          "<td><img src=" + pic27 + " height = 100></td></tr></table>" +
           "<p>Press any key to begin.</p>",
-     post_trial_gap: 200
+     post_trial_gap: 200,
      on_finish: function(){
         jsPsych.setProgressBar(2/29);
     }
@@ -152,7 +152,7 @@ trialnum = 2
 // Read in .csv from server
 var xhr = new XMLHttpRequest(),
     method = "GET",
-    url = "https://raw.githubusercontent.com/ashleychuikay/turktangrams/master/experiment/similartrials1.csv";
+    url = "https://cdn.jsdelivr.net/gh/ashleychuikay/turktangrams@master/experiment/similartrials1.csv"
 
 xhr.open(method, url, true);
 
