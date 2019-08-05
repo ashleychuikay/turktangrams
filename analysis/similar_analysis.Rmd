@@ -1,0 +1,100 @@
+---
+title: "Compare LD Indices"
+author: "Ashley Leung and Dan Yurovsky"
+date: '`r Sys.Date()`'
+output:
+  html_document: null
+  pdf_document: default
+  toc: no
+number_sections: no
+theme: lumen
+code_folding: hide
+toc_float: no
+---
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(forcats)
+theme_set(theme_classic(base_size = 14))
+```
+
+```{r read_data}
+data <- read_csv("../data/similartangramsdata.csv")
+```
+
+
+```{r cluster_function}
+reorder_factors_with_clusters <- function(m) {
+ 
+   m_wide <- m %>%
+    spread(group2, response) %>%
+    select(-1) %>%
+    as.matrix() 
+  
+  group1_order <- hclust(dist(m_wide))$order
+  group2_order <- hclust(dist(t(m_wide)))$order
+  
+  df_reordered <- m %>%
+    mutate(group1 = fct_relevel(group1, levels(m$group1)[group1_order]),
+           group2 = fct_relevel(group2, levels(m$group2)[group2_order]))
+
+  df_reordered
+}
+```
+
+Order the pairs from most to least similar
+```{r munging}
+sim_order <- data %>%
+  group_by(pair) %>%
+  summarise(similarity = mean(response)) %>%
+  arrange(desc(similarity))
+
+ordered_data <- data %>%
+  mutate(pair = factor(pair, levels = sim_order$pair))
+```
+
+```{r pair_sims_hist, fig.width = 6, fig.height = 4}
+ggplot(data, aes(x = response)) +
+  geom_histogram(fill = "white", color = "black")
+```
+
+```{r pair_sims_box, fig.width = 20, fig.height = 8}
+similar <- ordered_data %>%
+  filter(response >= median(response))
+
+different <- ordered_data %>%
+  filter(response < median(response))
+
+# similar tangrams
+ggplot(similar, aes(x = pair, y = response)) +
+  geom_boxplot() + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+
+# different tangrams
+ggplot(different, aes(x = pair, y = response)) +
+  geom_boxplot() + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+
+```
+
+Plot pairwise similarities in a heatmap
+
+```{r pairwise sims, fig.width = 5, fig.height=5}
+data_matrix <- data %>%
+  ungroup() %>%
+  select(response, group1, group2) %>%
+  group_by(group1, group2) %>%
+  summarise(response = mean(response)) %>%
+  ungroup()
+
+data_matrix_flipped <- data_matrix %>%
+  rename(group2 = group1, group1 = group2)
+
+data_matrix_full = bind_rows(data_matrix, data_matrix_flipped) %>%
+  mutate(group1 = factor(group1), group2 = factor(group2)) %>%
+  reorder_factors_with_clusters() %>%
+  filter(as.numeric(group1) <= as.numeric(group2)) #upper triangle
+
+ggplot(data_matrix_full, aes(x = group1, y = group2, fill = response)) + 
+  geom_tile() + 
+  theme(legend.position = c(.85, .35))
+```
