@@ -48,6 +48,13 @@ sim_order <- data %>%
   summarise(similarity = mean(response)) %>%
   arrange(desc(similarity))
 
+sim_original <- data %>%
+  group_by(group1, group2, pair) %>%
+  summarise(similarity = mean(response)) %>%
+  filter(group1 %in% c("A1", "B1", "E1", "F1", "G1", "H1", "I1", "J1", "K1", "L1") | group2 %in% c("B1", "E1", "F1", "G1",          "H1", "I1", "J1", "K1", "L1")) %>%
+  #filter(similarity >= 50) %>%
+  arrange(group1, desc(similarity))
+
 ordered_data <- data %>%
   mutate(pair = factor(pair, levels = sim_order$pair))
 ```
