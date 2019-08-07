@@ -11,7 +11,7 @@
 
 <meta name="author" content="Ashley Leung and Dan Yurovsky" />
 
-<meta name="date" content="2018-05-22" />
+<meta name="date" content="2018-05-30" />
 
 <title>Compare LD Indices</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Compare LD Indices</h1>
 <h4 class="author"><em>Ashley Leung and Dan Yurovsky</em></h4>
-<h4 class="date"><em>2018-05-22</em></h4>
+<h4 class="date"><em>2018-05-30</em></h4>
 
 </div>
 
@@ -155,7 +155,7 @@ theme_set(theme_classic(base_size = 14))</code></pre>
   
   df_reordered &lt;- m %&gt;%
     mutate(group1 = fct_relevel(group1, levels(m$group1)[group1_order]),
-           group2 = fct_relevel(group2, levels(m$group2)[group2_order]))
+           group2 = fct_relevel(group2, levels(m$group1)[group1_order]))
 
   df_reordered
 }</code></pre>

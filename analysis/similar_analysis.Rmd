@@ -1,5 +1,5 @@
 ---
-title: "Compare LD Indices"
+title: "Second tangram norming sample"
 author: "Ashley Leung and Dan Yurovsky"
 date: '`r Sys.Date()`'
 output:
@@ -14,11 +14,18 @@ toc_float: no
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(forcats)
+library(here)
+library(tidyboot)
+library(lme4)
+library(broom)
+library(knitr)
+
 theme_set(theme_classic(base_size = 14))
 ```
 
 ```{r read_data}
-data <- read_csv("../data/similartangramsdata.csv")
+first_data <- read_csv(here("data/turktangramsdata.csv"))
+second_data <- read_csv(here("data/similartangramsdata.csv"))
 ```
 
 
@@ -41,26 +48,71 @@ reorder_factors_with_clusters <- function(m) {
 }
 ```
 
+Compare ratings across the two studies
+```{r e1_e2_plot, fig.width = 6, fig.height = 6}
+both_data <- second_data %>%
+  filter(pair %in% first_data$pair) %>%
+  mutate(experiment = 2) %>%
+  bind_rows(mutate(first_data, experiment = 1) %>% 
+              filter(pair %in% second_data$pair))
+
+both_data %>%
+  group_by(pair, experiment) %>%
+  summarise(n = n()) %>%
+  spread(experiment, n)
+
+means <- both_data %>%
+  group_by(experiment, pair) %>%
+  tidyboot_mean(response, na.rm = T) %>%
+  select(-mean)
+
+e1_plotting_means <- means %>%
+  filter(experiment ==1) %>%
+  ungroup() %>%
+  select(-experiment, -n) %>%
+  rename_at(vars(-pair), ~paste0("e1_", .x)) 
+
+e2_plotting_means <- means %>%
+  filter(experiment == 2) %>%
+  ungroup() %>%
+  select(-experiment, -n) %>%
+  rename_at(vars(-pair), ~paste0("e2_", .x)) 
+  
+plotting_means <- left_join(e1_plotting_means, e2_plotting_means, by = "pair")
+
+ggplot(plotting_means, aes(x = e1_empirical_stat, y = e2_empirical_stat)) + 
+  geom_pointrange(aes(ymin = e2_ci_lower, ymax = e2_ci_upper)) +
+  geom_errorbarh(aes(xmin = e1_ci_lower, xmax = e1_ci_upper)) + 
+  geom_smooth(se = F, method = "lm") +
+  labs(x = "Experiment 1", y = "Experiment 2")
+```
+
+```{r e1_e2_lm}
+lm(e2_empirical_stat ~ e1_empirical_stat, data = plotting_means) %>%
+  tidy() %>%
+  kable()
+```
+
 Order the pairs from most to least similar
 ```{r munging}
-sim_order <- data %>%
+sim_order <- second_data %>%
   group_by(pair) %>%
   summarise(similarity = mean(response)) %>%
   arrange(desc(similarity))
 
-sim_original <- data %>%
+sim_original <- second_data %>%
   group_by(group1, group2, pair) %>%
   summarise(similarity = mean(response)) %>%
   filter(group1 %in% c("A1", "B1", "E1", "F1", "G1", "H1", "I1", "J1", "K1", "L1") | group2 %in% c("B1", "E1", "F1", "G1",          "H1", "I1", "J1", "K1", "L1")) %>%
   #filter(similarity >= 50) %>%
   arrange(group1, desc(similarity))
 
-ordered_data <- data %>%
+ordered_data <- second_data %>%
   mutate(pair = factor(pair, levels = sim_order$pair))
 ```
 
 ```{r pair_sims_hist, fig.width = 6, fig.height = 4}
-ggplot(data, aes(x = response)) +
+ggplot(second_data, aes(x = response)) +
   geom_histogram(fill = "white", color = "black")
 ```
 
@@ -86,7 +138,7 @@ ggplot(different, aes(x = pair, y = response)) +
 Plot pairwise similarities in a heatmap
 
 ```{r pairwise sims, fig.width = 5, fig.height=5}
-data_matrix <- data %>%
+data_matrix <- second_data %>%
   ungroup() %>%
   select(response, group1, group2) %>%
   group_by(group1, group2) %>%

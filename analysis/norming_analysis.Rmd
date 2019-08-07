@@ -35,7 +35,7 @@ reorder_factors_with_clusters <- function(m) {
   
   df_reordered <- m %>%
     mutate(group1 = fct_relevel(group1, levels(m$group1)[group1_order]),
-           group2 = fct_relevel(group2, levels(m$group2)[group2_order]))
+           group2 = fct_relevel(group2, levels(m$group1)[group1_order]))
 
   df_reordered
 }
@@ -84,4 +84,28 @@ data_matrix_full = bind_rows(data_matrix, data_matrix_flipped) %>%
 ggplot(data_matrix_full, aes(x = group1, y = group2, fill = response)) + 
   geom_tile() + 
   theme(legend.position = c(.85, .35))
+```
+
+```{r}
+item_data <- data %>%
+  group_by(group1, group2) %>%
+  summarise(response = mean(response)) 
+
+trial_data <- item_data %>%
+  rename(group2 = group1, group1 = group2) %>%
+  bind_rows(item_data)
+
+trial_data %>%
+  filter(group2 == "A1") %>%
+
+
+trial_data %>%
+  filter(! group1 %in% c("J1", "L!"), ! group2 %in% c("J1", "K1")
+  group_by(group1) %>%
+  arrange(response) %>%
+  ungroup() %>%
+  filter(response <= 50) %>%
+  group_by(group2) %>%
+  summarise(n = n())
+
 ```
