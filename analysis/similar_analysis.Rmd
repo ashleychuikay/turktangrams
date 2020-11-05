@@ -103,7 +103,7 @@ sim_order <- second_data %>%
 sim_original <- second_data %>%
   group_by(group1, group2, pair) %>%
   summarise(similarity = mean(response)) %>%
-  filter(group1 %in% c("A1", "B1", "E1", "F1", "G1", "H1", "I1", "J1", "K1", "L1") | group2 %in% c("B1", "E1", "F1", "G1",          "H1", "I1", "J1", "K1", "L1")) %>%
+  filter(group1 %in% c("A1", "B1", "E1", "F1", "G1", "H1", "I1", "J1", "K1", "L1") | group2 %in% c("B1", "E1", "F1", "G1", "H1", "I1", "J1", "K1", "L1")) %>%
   #filter(similarity >= 50) %>%
   arrange(group1, desc(similarity))
 
